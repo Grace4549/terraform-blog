@@ -1,6 +1,6 @@
 # What is Infrastructure as Code and Why It's Transforming DevOps
 
-Hi, I’m Grace Ngonyo Kihonge 👋. Today, I’m starting my **30-Day Terraform Challenge**!
+Hi, I’m Grace Ngonyo Kihonge. Today, I’m starting my **30-Day Terraform Challenge**!
 
 ## What is Infrastructure as Code (IaC)?
 
@@ -9,10 +9,10 @@ Normally, setting up servers, databases, and networks is slow, error-prone, and 
 
 ## Declarative vs Imperative Approaches
 
-- **Imperative:** You give step-by-step instructions manually.  
-- **Declarative:** You declare the **desired state**, and the tool figures out how to achieve it.  
+- **Imperative:** This is an approach where you give step-by-step instructions manually.  
+- **Declarative:** This is where you declare the **desired state**, and the tool figures out how to achieve it.  
 
-Terraform is declarative — you tell it what you want, and it creates it automatically.
+Terraform is declarative; you tell it what you want, and it creates it automatically.
 
 ## Why Terraform is Worth Learning
 
@@ -26,4 +26,4 @@ It lets you manage infrastructure in **code**, so changes are safe, auditable, a
 - Build a portfolio of cloud automation projects  
 - Share my progress weekly through blog posts  
 
-I’m excited to start this journey and see what I build in the next 30 days! 🚀
+I’m excited to start this journey and see what I build in the next 30 days!
