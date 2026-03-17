@@ -1,0 +1,96 @@
+##My Terraform Day 3 Journey
+
+Today was an exciting day in my Terraform learning journey! I finally completed Day 3, and I feel like I’m starting to truly understand how Infrastructure as Code works. Here’s my story:
+
+#Setting Up the Stage
+
+The first step was configuring Terraform to communicate with AWS. I created a provider block that told Terraform:
+
+-Which cloud to use (AWS)
+
+-Which region (us-east-1)
+
+-Which profile (terraform-user) with my access keys
+
+At first, Terraform was failing to connect because I had previously deactivated my access key. I checked my AWS IAM console, re-activated the key, and then Terraform successfully authenticated. This reminded me that active credentials are mandatory for Terraform to work.
+
+#Building My First Server
+
+Next, I worked on the resource blocks, which are basically instructions for Terraform on what to create in the cloud.
+
+Security Group – I created a security group that allowed SSH and HTTP access.
+
+EC2 Instance – I initially tried t2.micro for my instance type, thinking it was free tier eligible. Terraform returned an error:
+
+"The specified instance type is not eligible for Free Tier."
+
+I double-checked AWS documentation and replaced it with t3.micro, which is free tier eligible. Once I updated that, the EC2 instance launched successfully.
+
+I also added a user_data script so the server would automatically:
+
+-Update the system
+
+-Install Apache (httpd)
+
+-Start the web server
+
+-Display a personalized webpage
+
+#Challenges Updating the Webpage
+
+When I first updated the user_data block to show my personalized message:
+
+“Hello, Grace just completed Terraform Day 3 challenge! 🚀
+I’m super excited to grow in cloud and DevOps! 💻✨
+Terraform makes infrastructure fun and repeatable. Let's keep building!”
+
+…the webpage didn’t reflect the changes.
+
+I learned an important lesson about Terraform:
+
+user_data only runs on instance creation, not during in-place updates.
+
+Updating a running EC2 instance with new user_data doesn’t automatically apply.
+
+To fix this, I added a timestamp tag to the instance:
+
+tags = {
+  Name    = "TerraformDay3WebServer"
+  Updated = timestamp()   # triggers a replacement
+}
+
+This forced Terraform to destroy the old instance and create a new one with the updated HTML. Once that was done, the webpage finally showed my updated, colorful, and personalized message.
+
+#What I Learned
+
+From this challenge, I now understand:
+
+-Provider blocks are like the “bridge” between Terraform and the cloud.
+
+-Resource blocks define exactly what I want in the cloud — servers, security groups, and more.
+
+-Free tier eligibility matters when selecting instance types. Terraform errors can guide you to the solution.
+
+-User data only runs at creation; updating it requires replacement or manual intervention.
+
+-Using tags with timestamps is a clever trick to force Terraform to re-provision.
+
+I also realized how hands-on typing the code helped me catch errors and build muscle memory.
+
+#Why I’m Excited
+
+I can now deploy a server, configure it automatically, and see results live; all from code I wrote myself. That’s incredibly empowering! I feel like a real DevOps engineer in training.
+
+I can’t wait to explore automating more AWS services.
+
+Terraform is no longer just lines of code to me, it’s magic that turns text into cloud infrastructure. And today, I saw that magic in action.
+
+#Next Steps
+
+-Improve understanding of Terraform lifecycle and best practices
+
+-Keep documenting my journey to solidify learning
+
+#Final Thoughts
+
+Day 3 was challenging but extremely rewarding. I didn’t just run commands, I understood what was happening behind the scenes. From fixing inactive keys, checking free tier eligibility, to forcing updates for my HTML, I solved real-world Terraform issues.
