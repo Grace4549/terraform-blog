@@ -1,96 +1,145 @@
-My Terraform Day 3 Journey
+# Terraform Day 3: Deploying My First Server with Terraform: A Beginner's Guide
 
-Today was an exciting day in my Terraform learning journey! I finally completed Day 3, and I feel like I’m starting to truly understand how Infrastructure as Code works. Here’s my story:
+Today was a big step in my Cloud & DevOps journey! I used Terraform to provision and deploy a fully functional web server on AWS.
 
-#Setting Up the Stage
+Instead of manually clicking through the AWS console, I defined everything as code. This made the process repeatable, faster, and much easier to manage.
 
-The first step was configuring Terraform to communicate with AWS. I created a provider block that told Terraform:
+---
 
--Which cloud to use (AWS)
+## What I Built
 
--Which region (us-east-1)
+Using Terraform, I deployed:
 
--Which profile (terraform-user) with my access keys
+* An AWS EC2 instance (Amazon Linux 2)
+* A custom Security Group allowing HTTP (80) and SSH (22)
+* A web server configured automatically using a user data script
 
-At first, Terraform was failing to connect because I had previously deactivated my access key. I checked my AWS IAM console, re-activated the key, and then Terraform successfully authenticated. This reminded me that active credentials are mandatory for Terraform to work.
+Once deployed, I was able to access my server via a public IP and see my custom webpage live in the browser.
 
-#Building My First Server
+---
 
-Next, I worked on the resource blocks, which are basically instructions for Terraform on what to create in the cloud.
+## Key Concepts I Practiced
 
-Security Group – I created a security group that allowed SSH and HTTP access.
+This project helped me deeply understand:
 
-EC2 Instance – I initially tried t2.micro for my instance type, thinking it was free tier eligible. Terraform returned an error:
+**1. Provider Configuration**
+I connected Terraform to AWS using my IAM user (`terraform-user`) and configured the `us-east-1` region.
 
-"The specified instance type is not eligible for Free Tier."
+**2. Resource Creation**
+I defined infrastructure using Terraform resources:
 
-I double-checked AWS documentation and replaced it with t3.micro, which is free tier eligible. Once I updated that, the EC2 instance launched successfully.
+* `aws_instance`
+* `aws_security_group`
 
-I also added a user_data script so the server would automatically:
+**3. Infrastructure as Code (IaC)**
+Instead of manual setup, everything was declared in `main.tf`, making it reusable and version-controlled.
 
--Update the system
+**4. Automation with User Data**
+I used a bash script to:
 
--Install Apache (httpd)
+* Install Apache
+* Start the web server
+* Deploy a custom HTML page
 
--Start the web server
+---
 
--Display a personalized webpage
+## My Live Server
 
-#Challenges Updating the Webpage
+After deployment, I accessed my application using:
 
-When I first updated the user_data block to show my personalized message:
+```
+http://100.48.68.110/
+```
 
-“Hello, Grace just completed Terraform Day 3 challenge! 🚀
-I’m super excited to grow in cloud and DevOps! 💻✨
-Terraform makes infrastructure fun and repeatable. Let's keep building!”
+Seeing my custom page live felt incredibly rewarding and this is where everything came together.
 
-…the webpage didn’t reflect the changes.
+---
 
-I learned an important lesson about Terraform:
+## Challenges I Faced (and What I Learned)
 
-user_data only runs on instance creation, not during in-place updates.
+This wasn’t a smooth ride and that’s where the real learning happened.
 
-Updating a running EC2 instance with new user_data doesn’t automatically apply.
+**1. EC2 Instance Failed to Launch**
+I initially used `t2.micro`, which is no longer free-tier eligible in my setup.
+ Fix: I switched to `t3.micro` after carefully reading the Terraform error output.
 
-To fix this, I added a timestamp tag to the instance:
+---
 
-tags = {
-  Name    = "TerraformDay3WebServer"
-  Updated = timestamp()   # triggers a replacement
-}
+**2. AWS Authentication Issues**
+Terraform kept failing during authentication.
+ Root cause: I had deactivated my access key previously.
+ Fix: Reactivated the key and verified using AWS CLI.
 
-This forced Terraform to destroy the old instance and create a new one with the updated HTML. Once that was done, the webpage finally showed my updated, colorful, and personalized message.
+---
 
-#What I Learned
+**3. HTML Changes Not Reflecting**
+Even after updating my code, the webpage didn’t change.
+ Lesson: Terraform does not re-run `user_data` on existing instances.
+ Fix: Destroyed and recreated the instance:
 
-From this challenge, I now understand:
+```
+terraform destroy
+terraform apply
+```
 
--Provider blocks are like the “bridge” between Terraform and the cloud.
+This was a major “aha” moment for me.
 
--Resource blocks define exactly what I want in the cloud — servers, security groups, and more.
+---
 
--Free tier eligibility matters when selecting instance types. Terraform errors can guide you to the solution.
+## Architecture Overview
 
--User data only runs at creation; updating it requires replacement or manual intervention.
+My setup followed a simple but real-world cloud architecture:
 
--Using tags with timestamps is a clever trick to force Terraform to re-provision.
+* Internet → Security Group → EC2 Instance
+* Security Group allowed:
 
-I also realized how hands-on typing the code helped me catch errors and build muscle memory.
+  * HTTP (80)
+  * SSH (22)
+* EC2 instance served a web page using Apache
 
-#Why I’m Excited
+<img width="306" height="311" alt="image" src="https://github.com/user-attachments/assets/de2ec523-d0db-42a0-9e50-843b722ef07b" />
 
-I can now deploy a server, configure it automatically, and see results live; all from code I wrote myself. That’s incredibly empowering! I feel like a real DevOps engineer in training.
 
-I can’t wait to explore automating more AWS services.
+---
 
-Terraform is no longer just lines of code to me, it’s magic that turns text into cloud infrastructure. And today, I saw that magic in action.
+## Clean-Up (Important DevOps Practice)
 
-#Next Steps
+After confirming everything worked, I ran:
 
--Improve understanding of Terraform lifecycle and best practices
+```
+terraform destroy
+```
 
--Keep documenting my journey to solidify learning
+This removed all resources (EC2 instance, security group, etc.).
 
-#Final Thoughts
+This step is critical in real-world cloud environments to:
 
-Day 3 was challenging but extremely rewarding. I didn’t just run commands, I understood what was happening behind the scenes. From fixing inactive keys, checking free tier eligibility, to forcing updates for my HTML, I solved real-world Terraform issues.
+* Avoid unnecessary costs
+* Keep infrastructure clean
+* Practice responsible resource management
+
+---
+
+## What This Project Taught Me
+
+This wasn’t just about deploying a server, it changed how I think about infrastructure.
+
+I learned:
+
+* How to debug real Terraform errors
+* The importance of reading error messages carefully
+* That infrastructure should be **automated, not manual**
+
+Most importantly, I gained confidence in working with AWS and Terraform in a real setup.
+
+---
+
+## What’s Next?
+
+I’m continuing to build more hands-on projects to strengthen my Cloud & DevOps skills, including multi-tier architectures, load balancing, and CI/CD pipelines.
+
+This is just the beginning.
+
+---
+
+✨ *Hello, Grace just completed Terraform Day 3 challenge — and I’m excited to keep growing in Cloud & DevOps!*
