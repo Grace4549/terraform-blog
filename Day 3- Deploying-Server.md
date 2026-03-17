@@ -1,4 +1,4 @@
-##My Terraform Day 3 Journey
+My Terraform Day 3 Journey
 
 Today was an exciting day in my Terraform learning journey! I finally completed Day 3, and I feel like I’m starting to truly understand how Infrastructure as Code works. Here’s my story:
 
