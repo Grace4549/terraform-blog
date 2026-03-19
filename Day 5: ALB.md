@@ -124,6 +124,11 @@ Through this exercise, I learned:
 | variable   | Declares input variables | To avoid hardcoding values and make configuration reusable | `variable "instance_count" { default = 2 }` |
 | output     | Exposes values after apply | To retrieve important info like DNS names, IPs, or IDs | `output "alb_dns_name" { value = aws_lb.alb.dns_name }` |
 | data       | Reads existing resources not managed by your config | To reference resources created outside Terraform or by another module | `data "aws_availability_zones" "all" {}` |
+| aws_lb     | Creates an Application Load Balancer | When you need to distribute traffic across multiple instances | `resource "aws_lb" "alb" { name = "app-alb" internal = false subnets = aws_subnet.public.*.id }` |
+| aws_lb_target_group | Creates a Target Group for the ALB | To define which instances receive traffic and health checks | `resource "aws_lb_target_group" "tg" { port = 80 protocol = "HTTP" vpc_id = aws_vpc.main.id }` |
+| aws_lb_listener | Configures ALB listeners | To forward requests from the ALB to a target group | `resource "aws_lb_listener" "listener" { load_balancer_arn = aws_lb.alb.arn port = 80 default_action { type = "forward" target_group_arn = aws_lb_target_group.tg.arn } }` |
+| aws_autoscaling_group | Manages a group of EC2 instances | When you want automatic scaling and self-healing | `resource "aws_autoscaling_group" "asg" { launch_template { id = aws_launch_template.app.id version = "$Latest" } min_size = 2 max_size = 5 target_group_arns = [aws_lb_target_group.tg.arn] }` |
+| aws_launch_template | Template for EC2 instance configuration | To standardize instances used by ASG | `resource "aws_launch_template" "app" { image_id = var.ami instance_type = "t3.micro" tag_specifications { resource_type = "instance" tags = { Name = "terraform-instance-${count.index + 1}" } } }` |
 
 ## Conclusion:
 
