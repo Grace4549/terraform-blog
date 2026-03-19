@@ -117,12 +117,13 @@ Through this exercise, I learned:
 -The ALB + ASG combination provides scalable, fault-tolerant architecture that can handle high traffic seamlessly.
 
 ## Block Types Used
-Block	Purpose	Example
-provider	Configure AWS	provider "aws" { region = "us-east-1" }
-resource	Create infrastructure	resource "aws_instance" "app" { ... }
-variable	Input values	variable "instance_count" { default = 2 }
-output	Expose values	output "alb_dns_name" { value = aws_lb.alb.dns_name }
-data	Reference existing resources	data "aws_availability_zones" "all" {}
+| Block Type | Purpose | When to Use | Example |
+|------------|---------|------------|--------|
+| provider   | Configures the cloud provider | Once per provider at the start of your configuration | `provider "aws" { region = "us-east-1" }` |
+| resource   | Defines infrastructure to create | Every piece of infrastructure you want Terraform to manage | `resource "aws_instance" "app" { ami = var.ami instance_type = "t3.micro" }` |
+| variable   | Declares input variables | To avoid hardcoding values and make configuration reusable | `variable "instance_count" { default = 2 }` |
+| output     | Exposes values after apply | To retrieve important info like DNS names, IPs, or IDs | `output "alb_dns_name" { value = aws_lb.alb.dns_name }` |
+| data       | Reads existing resources not managed by your config | To reference resources created outside Terraform or by another module | `data "aws_availability_zones" "all" {}` |
 
 ## Conclusion:
 
