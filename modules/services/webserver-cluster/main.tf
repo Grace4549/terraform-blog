@@ -146,8 +146,8 @@ resource "aws_launch_template" "lt" {
     yum install -y httpd
     systemctl start httpd
     systemctl enable httpd
-    echo "<h1>Hello from ${var.cluster_name} - ${var.environment}</h1>" > /var/www/html/index.html
-  EOT
+echo "<h1>Hello from ${var.cluster_name} - ${var.environment} - v3</h1>" > /var/www/html/index.html  
+EOT
   )
 
   tags = merge(local.common_tags, {
