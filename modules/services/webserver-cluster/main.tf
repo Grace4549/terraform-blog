@@ -1,4 +1,12 @@
 terraform {
+  cloud {
+    organization = "TOP-TECH"
+
+    workspaces {
+      name = "webserver-cluster-dev"
+    }
+  }
+
   required_version = ">= 1.6"
 
   required_providers {
@@ -236,5 +244,25 @@ resource "aws_lb_listener" "listener" {
 
   tags = merge(local.common_tags, {
     Name = "${var.cluster_name}-listener"
+  })
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_cpu" {
+  alarm_name          = "${var.cluster_name}-high-cpu"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods  = 2
+  metric_name         = "CPUUtilization"
+  namespace           = "AWS/EC2"
+  period              = 120
+  statistic           = "Average"
+  threshold           = 80
+  alarm_description   = "Triggered when CPU exceeds 80% for 4 minutes"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.asg.name
+  }
+
+  tags = merge(local.common_tags, {
+    Name = "${var.cluster_name}-high-cpu-alarm"
   })
 }
