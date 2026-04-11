@@ -12,3 +12,7 @@ output "vpc_id" {
   value       = aws_vpc.main.id
   description = "The ID of the VPC"
 }
+output "cloudwatch_alarm_name" {
+  value       = aws_cloudwatch_metric_alarm.high_cpu.alarm_name
+  description = "Name of the CloudWatch CPU alarm"
+}
