@@ -1,0 +1,9 @@
+import "tfplan/v2" as tfplan
+
+main = rule {
+  all tfplan.resource_changes as _, rc {
+    rc.change.after is not null and
+    rc.change.after.tags is not null and
+    rc.change.after.tags["ManagedBy"] is "terraform"
+  }
+}
